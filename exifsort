@@ -1,4 +1,32 @@
 #!/usr/bin/env ruby
 
+require 'fileutils'
+
 require 'rubygems'
 require 'exifr'
+
+def move_to( filename, dest )
+  dest += '/'
+  Dir.mkdir( dest ) if not File.exists?( dest )
+  FileUtils.mv( filename, dest )
+  puts dest + filename
+end
+
+def get_date( filename )
+  picture = EXIFR::JPEG.new( filename )
+  picture.exif.date_time_original.strftime( "%Y-%m-%d" )
+end
+
+def get_pictures( pathname )
+  Dir.entries( pathname ).find_all do |filename|
+    filename.match( /jpe?g/i )
+  end
+end
+
+get_pictures( '.' ).each do | filename |
+  if EXIFR::JPEG.new( filename ).exif?
+    move_to( filename, get_date( filename ) )
+  else
+    move_to( filename, 'no-exif' )
+  end
+end
