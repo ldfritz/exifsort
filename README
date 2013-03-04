@@ -1,0 +1,5 @@
+exifsort
+========
+
+This script reads the metadata from a JPEG file and moves the file into a
+subdirectory named using the date found in the file's metadata.
