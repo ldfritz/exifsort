@@ -1,0 +1,7 @@
+2013-03-03  Luke Fritz
+
+  * lib/exifsort.rb: Create initial script.
+  * test/tc_exifsort.rb: Create test skeleton.
+  * ChangeLog, NEWS, README, TODO: Create initial project documents.
+  * Gemfile: Add initial gem requirements.
+  * Rakefile: Add test task.
