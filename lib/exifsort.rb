@@ -4,8 +4,32 @@ require 'fileutils'
 
 require 'rubygems'
 require 'exifr'
+require "slop"
 
-DRYRUN = ARGV[ 0 ] == '-t' ? true : false
+# Option Parser
+opts = Slop.parse!(:help => true) do
+  banner "Usage: exifsort [OPTIONS] PATH"
+  separator """
+Sort JPG files into dated directories based on their EXIF dates.
+
+Options:"""
+  on "c", "copy",      "Copy images instead of moving them."
+  on "d", "dest=",     "Move images to DEST instead of the current directory."
+  on "dry-run",        "Run without commiting any changes."
+  on "r", "recursive", "Locate images in PATH recursively."
+end
+
+# Defaults
+DRYRUN = opts[:"dry-run"]
+DEST   = opts[:dest] || "."
+
+# Validation
+if ARGV.length == 1 and File.directory?(ARGV.last)
+  PATH = ARGV.last
+else
+  puts opts
+  exit
+end
 
 def move_to( filename, dest )
   dest += '/'
