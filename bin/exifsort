@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+require "slop"
+
+$LOAD_PATH.unshift("#{File.expand_path(File.dirname(__FILE__))}/../lib/")
+require "collection"
+
+VERSION = "0.2.0"
+
+# Parse options
+opts = Slop.parse!(:help => true) do
+  banner "Usage: exifsort [OPTIONS] FILE/DIRECTORY"
+
+  separator "
+Sort JPG files into dated directories based on their EXIF dates.
+
+Options:"
+  on "c", "copy",      "Copy images instead of moving them."
+  on "d", "dest=",     "Move images to DEST (default: .)."
+  on      "dry-run",   "Run without making any changes."
+  on "r", "recursive", "Locate images recursively."
+  on "v", "verbose",   "Print resulting actions."
+  on      "version",   "Print version information and exit." do
+    puts "exifsort #{VERSION}"
+    exit
+  end
+end
+
+options = opts.to_hash
+options[:dest] ||= "."
+options[:src] = ARGV.length > 0 ? ARGV : ["."]
+
+print Collection.execute!(options)
