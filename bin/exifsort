@@ -27,6 +27,11 @@ end
 
 options = opts.to_hash
 options[:dest] ||= "."
-options[:src] = ARGV.length > 0 ? ARGV : ["."]
+if ARGV.length > 0
+  options[:src] = ARGV
+else
+  puts opts
+  exit
+end
 
 print Collection.execute!(options)

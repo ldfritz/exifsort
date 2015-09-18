@@ -45,12 +45,23 @@ module Collection
   def self.transfer_files
     output = ""
     @files.each do |file|
-      if @verbose
-        output << "#{@dest}/#{file.dest} <= #{file.src}\n"
-      end
-      unless @dryrun
-        FileUtils.mkdir_p(file.dest_dir)
-        FileUtils.send(@command, file.src, "#{@dest}/#{file.dest}")
+      dest = "#{@dest}/#{file.dest}"
+      if File.exist?(dest)
+        output << "skipping #{file.src}"
+        if File.absolute_path(file.src) == File.absolute_path(dest)
+          output << ": NO CHANGE"
+        else
+          output << ": #{dest} ALREADY EXISTS"
+        end
+        output << "\n"
+      else
+        unless @dryrun
+          FileUtils.mkdir_p(file.dest_dir)
+          FileUtils.send(@command, file.src, dest)
+        end
+        if @verbose
+          output << "#{dest} <= #{file.src}\n"
+        end
       end
     end
     output.gsub(/\/\//, "\/")

@@ -23,6 +23,10 @@ class Photo
   private
   def date
     exif = EXIFR::JPEG.new(src).exif
-    exif.date_time_original || exif.date_time || Date.new(0, 1, 1)
+    begin
+      exif.date_time_original || exif.date_time || Date.new(0, 1, 1)
+    rescue
+      Date.new(0, 1, 1)
+    end
   end
 end
